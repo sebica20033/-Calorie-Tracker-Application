@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px 50px;
+            background-color: #ff5722;
+            color: #fff;
+        }
+
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: auto; /* Mută logo-ul în partea stângă */
+        }
+
+        .header .nav {
+            display: flex;
+            gap: 20px;
+            justify-content: center; /* Elemente centrate */
+            flex-grow: 1; /* Extinde spațiul în jurul elementelor */
+        }
+
+        .header .nav a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .header .nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        form input, form select, form button {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .result {
+            background-color: #e9f7e9;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="logo">Food Tracker</div>
+    <nav class="nav">
+        <a href="frontend.html">Home</a>
+        <a href="slabire.html">Calculator</a>
+        <a href="alimente.html">Alimente</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h1>Calculator pentru Slăbire</h1>
+
+    <form id="userForm">
+        <input type="number" id="age" placeholder="Vârstă (ani)" required>
+        <input type="number" id="height" placeholder="Înălțime (cm)" required>
+        <input type="number" id="weight" placeholder="Greutate (kg)" required>
+        <select id="activityLevel" required>
+            <option value="" disabled selected>Alege nivelul de activitate</option>
+            <option value="1.2">Sedentar</option>
+            <option value="1.375">Ușor activ</option>
+            <option value="1.55">Moderat activ</option>
+            <option value="1.725">Foarte activ</option>
+        </select>
+    </form>
+
+    <form id="foodForm">
+        <select id="foodSelect" required>
+            <option value="" disabled selected>Selectează Aliment</option>
+        </select>
+        <input type="number" id="quantity" placeholder="Cantitate (g)" required>
+        <button type="submit">Adaugă Aliment</button>
+    </form>
+
+    <table id="foodTable">
+        <thead>
+        <tr>
+            <th>Aliment</th>
+            <th>Cantitate (g)</th>
+            <th>Acțiuni</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <button id="calculateBtn">Calculează</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const foodForm = document.getElementById('foodForm');
+    const foodTable = document.getElementById('foodTable').getElementsByTagName('tbody')[0];
+    const calculateBtn = document.getElementById('calculateBtn');
+    const userForm = document.getElementById('userForm');
+    const foodSelect = document.getElementById('foodSelect');
+    const resultDiv = document.getElementById('result');
+
+    let foodEntries = [];
+
+    async function loadFoodOptions() {
+        try {
+            const response = await fetch('http://localhost:8080/alimente/getall');
+            if (!response.ok) throw new Error('Failed to fetch food options');
+
+            const data = await response.json();
+            data.forEach(food => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(food);
+                option.textContent = food.nume;
+                foodSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    foodForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Validare pentru selectarea alimentului
+        if (!foodSelect.value) {
+            alert("Please select a food item.");
+            return;
+        }
+
+        // Validare pentru cantitatea introdusă
+        const quantity = parseFloat(document.getElementById('quantity').value);
+        if (!quantity || quantity <= 0) {
+            alert("Please enter a valid quantity in grams.");
+            return;
+        }
+
+        const selectedFood = JSON.parse(foodSelect.value);
+
+        // Adăugăm alimentul în listă și tabel
+        foodEntries.push({ id: selectedFood.id, quantity });
+
+        const row = foodTable.insertRow();
+        row.innerHTML = `
+      <td>${selectedFood.nume}</td>
+      <td>${quantity} g</td>
+      <td><button class="delete-btn" onclick="deleteRow(this)">Șterge</button></td>
+    `;
+
+        foodForm.reset();
+    });
+
+    calculateBtn.addEventListener('click', async function () {
+        // Validare pentru formularul de utilizator
+        const age = parseFloat(document.getElementById('age').value);
+        const height = parseFloat(document.getElementById('height').value);
+        const weight = parseFloat(document.getElementById('weight').value);
+        const activityLevel = parseFloat(document.getElementById('activityLevel').value);
+
+        if (!age || age <= 0) {
+            alert("Va rugam sa introduceti varsta dumneavoastra.");
+            return;
+        }
+
+        if (!height || height <= 0) {
+            alert("Va rugam introduci inaltimea dumneavoastra in centimetri. Ex: 170 cm = 1.70.");
+            return;
+        }
+
+        if (!weight || weight <= 0) {
+            alert("Va rugam introduci greutatea dumneavoastra in kilograme. Ex: 70 kg = 70.00.");
+            return;
+        }
+
+        if (!activityLevel) {
+            alert("Va rugam alege nivelul de activitate dumneavoastra.");
+            return;
+        }
+
+        // Verificare dacă au fost adăugate alimente
+        if (foodEntries.length === 0) {
+            alert("Va rugam introduceti macar un aliment.");
+            return;
+        }
+
+        const userData = {
+            age,
+            height,
+            weight,
+            activityLevel,
+            foods: foodEntries
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/alimente/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            if (!response.ok) throw new Error('Failed to calculate');
+
+            const result = await response.json();
+            resultDiv.innerHTML = `
+        <div class="result">
+            <h3>Rezultatul tău:</h3>
+            <p>TDEE: ${result.TDEE.toFixed(2)} kcal</p>
+            <p>Calorii consumate: ${result.totalCalories.toFixed(2)} kcal</p>
+            <p>${result.message}</p>
+        </div>
+      `;
+
+            // Resetează câmpurile și tabelul
+            userForm.reset();
+            foodForm.reset();
+            foodTable.innerHTML = '';
+            foodEntries = [];
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+
+    loadFoodOptions();
+</script>
+</body>
+</html>
