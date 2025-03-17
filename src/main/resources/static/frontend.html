@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Your Favourite Foods</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 50px;
+            background-color: #f45b23;
+            color: #fff;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .logo {
+            font-size: 30px;
+            font-weight: bold;
+            color: #fff;
+            position: absolute;
+            left: 50px;
+        }
+
+        .header .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .header .nav a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .header .nav a:hover {
+            color: #ffd4b1;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .text-section {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .text-section h1 {
+            font-size: 50px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .text-section p {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .text-section .total {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        .text-section .order-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .text-section .order-controls button {
+            padding: 12px 30px;
+            font-size: 18px;
+            background-color: #f45b23;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .text-section .order-controls button:hover {
+            background-color: #d9431c;
+            transform: translateY(-3px);
+        }
+
+        .image-section {
+            position: relative;
+            max-width: 600px;
+        }
+
+        .image-section img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .image-section img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-section .tag {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: #f45b23;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .text-section h1 {
+                font-size: 36px;
+            }
+
+            .text-section p {
+                font-size: 16px;
+            }
+
+            .text-section .order-controls button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="logo">Food Tracker</div>
+    <nav class="nav">
+        <a href="frontend.html">Home</a>
+        <a href="slabire.html">Calculator</a>
+        <a href="alimente.html">Alimente</a>
+    </nav>
+</header>
+
+<main class="main">
+    <div class="text-section">
+        <h1>Bine ati venit pe aplicația noastră!</h1>
+        <p>Aplicația noastră vă ajută să monitorizați cu ușurință alimentele pe care le consumați, oferindu-vă un instrument simplu și eficient pentru a vă atinge obiectivele de sănătate. Cu un design intuitiv și funcționalități avansate, veți putea ține evidența meselor!</p>
+        <div class="total">Puteti accesa calculatorul nostru:</div>
+        <div class="order-controls">
+            <button onclick="window.location.href='slabire.html'">Calculator</button>
+        </div>
+
+    </div>
+
+</main>
+
+<footer class="footer">
+    &copy; Food Tracker. For a better life .
+</footer>
+
+</body>
+</html>
